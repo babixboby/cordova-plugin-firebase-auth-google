@@ -1,10 +1,12 @@
 var exec = require('cordova/exec');
 
-function FirebaseAuth(options) {
-
-    options = options || {};
-    var allowDomains = options.allowDomains ? [].concat(options.allowDomains) : null;
-    exec(dispatchEvent, null, 'FirebaseAuthPlugin', 'initialize', [allowDomains]);
+function FirebaseAuth() {
+    
+    this.init = function(options) {
+        options = options || {};
+        var allowDomains = options.allowDomains ? [].concat(options.allowDomains) : null;
+        exec(dispatchEvent, null, 'FirebaseAuthPlugin', 'initialize', [allowDomains]);
+    }
 
     this.getToken = function(success, failure) {
         
@@ -20,16 +22,16 @@ function FirebaseAuth(options) {
 
         return exec(null, null, 'FirebaseAuthPlugin', 'signOut', []);
     };
-
-    function dispatchEvent(event) {
-
-        window.dispatchEvent(new CustomEvent(event.type, {detail: event.data}));
-    }
     
     this.getUserData = function(success, failure) {
         
         return exec(success, failure, 'FirebaseAuthPlugin', 'getUserData', []);
     };
+
+    function dispatchEvent(event) {
+
+        window.dispatchEvent(new CustomEvent(event.type, {detail: event.data}));
+    }
 }
 
 if (typeof module !== undefined && module.exports) {
