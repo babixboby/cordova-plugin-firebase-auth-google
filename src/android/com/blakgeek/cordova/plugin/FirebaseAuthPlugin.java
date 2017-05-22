@@ -97,7 +97,6 @@ public class FirebaseAuthPlugin extends CordovaPlugin implements OnCompleteListe
     private boolean signOut() {
         Auth.GoogleSignInApi.signOut(googleApiClient);
         FirebaseAuth.getInstance().signOut();
-        signedInUser = new JSONObject();
         return true;
     }
 
