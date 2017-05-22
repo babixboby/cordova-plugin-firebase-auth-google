@@ -42,7 +42,6 @@
             </feature>
         </config-file>
 
-        <framework src="src/android/plugin.gradle" custom="true" type="gradleReference" />
         <framework src="com.google.firebase:firebase-auth:+" />
         <framework src="com.google.android.gms:play-services-auth:+" />
 
