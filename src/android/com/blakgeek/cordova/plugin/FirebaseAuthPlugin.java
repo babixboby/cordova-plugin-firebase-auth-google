@@ -112,16 +112,15 @@ public class FirebaseAuthPlugin extends CordovaPlugin implements OnCompleteListe
 
         final FirebaseUser user = firebaseAuth.getCurrentUser();
         if (user != null) {
-            final JSONObject data = new JSONObject()
-             try{
+            final JSONObject data = new JSONObject();
+             try {
                 data.put("name", user.getDisplayName());
                 data.put("email", user.getEmail());
                 data.put("id", user.getUid());
                 if (user.getPhotoUrl() != null) {
                     data.put("photoUrl", user.getPhotoUrl().toString());
                 }
-            } catch (JSONException e) {
-            }
+            } catch (JSONException e) { }
              callbackContext.success(data);
         } else {
             callbackContext.success();
