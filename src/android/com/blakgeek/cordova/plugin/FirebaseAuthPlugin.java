@@ -37,14 +37,14 @@ public class FirebaseAuthPlugin extends CordovaPlugin implements OnCompleteListe
         Context context = this.cordova.getActivity().getApplicationContext();
         String defaultClientId = getDefaultClientId(context);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(defaultClientId)
-                .requestEmail()
-                .requestProfile()
-                .build();
+        .requestIdToken(defaultClientId)
+        .requestEmail()
+        .requestProfile()
+        .build();
 
         googleApiClient = new GoogleApiClient.Builder(context)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
+        .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+        .build();
         googleApiClient.connect();
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseAuth.addAuthStateListener(this);
@@ -61,15 +61,17 @@ public class FirebaseAuthPlugin extends CordovaPlugin implements OnCompleteListe
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         switch (action) {
             case "initialize":
-                return initialize(args, callbackContext);
+            return initialize(args, callbackContext);
             case "getToken":
-                return getToken(callbackContext);
+            return getToken(callbackContext);
+            case "getUserData":
+            return getUserData(callbackContext);
             case "signIn":
-                return signIn();
+            return signIn();
             case "signOut":
-                return signOut();
+            return signOut();
             default:
-                return false;
+            return false;
         }
     }
 
@@ -95,6 +97,7 @@ public class FirebaseAuthPlugin extends CordovaPlugin implements OnCompleteListe
     private boolean signOut() {
         Auth.GoogleSignInApi.signOut(googleApiClient);
         FirebaseAuth.getInstance().signOut();
+        signedInUser = new JSONObject();
         return true;
     }
 
@@ -105,7 +108,28 @@ public class FirebaseAuthPlugin extends CordovaPlugin implements OnCompleteListe
         return true;
     }
 
-    private boolean  initialize(JSONArray args, CallbackContext callbackContext) {
+    private boolean getUserData(final CallbackContext callbackContext) {
+
+        final FirebaseUser user = firebaseAuth.getCurrentUser();
+        if (user != null) {
+             try{
+                signedInUser.put("name", user.getDisplayName());
+                signedInUser.put("email", user.getEmail());
+                signedInUser.put("id", user.getUid());
+                if (user.getPhotoUrl() != null) {
+                    signedInUser.put("photoUrl", user.getPhotoUrl().toString());
+                }
+            } catch (JSONException e) {
+            }
+             callbackContext.success(signedInUser);
+        } else {
+            callbackContext.success();
+        }
+
+        return true;
+    }
+
+    private boolean initialize(JSONArray args, CallbackContext callbackContext) {
 
         JSONArray allowedDomains = args.optJSONArray(0);
         this.allowedDomains = new ArrayList<>();
@@ -229,6 +253,7 @@ public class FirebaseAuthPlugin extends CordovaPlugin implements OnCompleteListe
                     if(token != null && !token.equals(currentToken)) {
                         currentToken = token;
                         try {
+
                             data.put("token", token);
                             data.put("name", user.getDisplayName());
                             data.put("email", user.getEmail());
@@ -248,5 +273,3 @@ public class FirebaseAuthPlugin extends CordovaPlugin implements OnCompleteListe
         }
     }
 }
-
-
