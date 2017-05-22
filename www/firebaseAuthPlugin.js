@@ -1,40 +1,39 @@
 var exec = require('cordova/exec');
 
-function FirebaseAuth() {
-    
-    this.init = function(options) {
-        options = options || {};
-        var allowDomains = options.allowDomains ? [].concat(options.allowDomains) : null;
-        exec(dispatchEvent, null, 'FirebaseAuthPlugin', 'initialize', [allowDomains]);
-    }
+function dispatchEvent(event) {
 
-    this.getToken = function(success, failure) {
-        
-        return exec(success, failure, 'FirebaseAuthPlugin', 'getToken', []);
-    };
-
-    this.signIn = function () {
-
-        return exec(null, null, 'FirebaseAuthPlugin', 'signIn', []);
-    };
-
-    this.signOut = function () {
-
-        return exec(null, null, 'FirebaseAuthPlugin', 'signOut', []);
-    };
-    
-    this.getUserData = function(success, failure) {
-        
-        return exec(success, failure, 'FirebaseAuthPlugin', 'getUserData', []);
-    };
-
-    function dispatchEvent(event) {
-
-        window.dispatchEvent(new CustomEvent(event.type, {detail: event.data}));
-    }
+    window.dispatchEvent(new CustomEvent(event.type, {detail: event.data}));
 }
+
+function FirebaseAuth() { }
+
+FirebaseAuth.prototype.init = function(options) {
+    options = options || {};
+    var allowDomains = options.allowDomains ? [].concat(options.allowDomains) : null;
+    exec(dispatchEvent, null, 'FirebaseAuthPlugin', 'initialize', [allowDomains]);
+};
+
+FirebaseAuth.prototype.getToken = function(success, failure) {
+    
+    return exec(success, failure, 'FirebaseAuthPlugin', 'getToken', []);
+};
+
+FirebaseAuth.prototype.signIn = function () {
+
+    return exec(null, null, 'FirebaseAuthPlugin', 'signIn', []);
+};
+
+FirebaseAuth.prototype.signOut = function () {
+
+    return exec(null, null, 'FirebaseAuthPlugin', 'signOut', []);
+};
+
+FirebaseAuth.prototype.getUserData = function(success, failure) {
+    
+    return exec(success, failure, 'FirebaseAuthPlugin', 'getUserData', []);
+};
 
 if (typeof module !== undefined && module.exports) {
 
-    module.exports = FirebaseAuth;
+    module.exports = new FirebaseAuth();
 }
