@@ -7,15 +7,8 @@ function FirebaseAuth(options) {
     exec(dispatchEvent, null, 'FirebaseAuthPlugin', 'initialize', [allowDomains]);
 
     this.getToken = function(success, failure) {
-
-        if(window.Promise) {
-            return new Promise(function (resolve, reject) {
-
-                exec(resolve, reject, 'FirebaseAuthPlugin', 'getToken', []);
-            });
-        } else {
-            return exec(success, failure, 'FirebaseAuthPlugin', 'getToken', []);
-        }
+        
+        return exec(success, failure, 'FirebaseAuthPlugin', 'getToken', []);
     };
 
     this.signIn = function () {
@@ -32,6 +25,11 @@ function FirebaseAuth(options) {
 
         window.dispatchEvent(new CustomEvent(event.type, {detail: event.data}));
     }
+    
+    this.getUserData = function(success, failure) {
+        
+        return exec(success, failure, 'FirebaseAuthPlugin', 'getUserData', []);
+    };
 }
 
 if (typeof module !== undefined && module.exports) {
