@@ -6,8 +6,8 @@
     <license>Apache 2.0</license>
     <keywords>firebase,cordova,authentication</keywords>
     <author>Carlos "blakgeek" Lawton</author>
-    <repo>https://github.com/blakgeek/cordova-plugin-firebase-auth-google.git</repo>
-    <issue>https://github.com/blakgeek/cordova-plugin-firebase-auth-google/issues</issue>
+    <repo>https://github.com/stormwin/cordova-plugin-firebase-auth-google.git</repo>
+    <issue>https://github.com/stormwin/cordova-plugin-firebase-auth-google/issues</issue>
 
     <js-module src="www/firebaseAuthPlugin.js" name="FirebaseAuthPlugin">
         <clobbers target="FirebaseAuth" />
