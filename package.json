@@ -1,10 +1,10 @@
 {
-  "name": "cordova-plugin-firebase-auth",
-  "version": "1.0.5",
+  "name": "cordova-plugin-firebase-auth-google",
+  "version": "1.0.6",
   "description": "Adds support for Firebase authentication.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/blakgeek/cordova-plugin-firebase-auth-google.git"
+    "url": "https://github.com/stormwin/cordova-plugin-firebase-auth-google.git"
   },
   "keywords": [
     "ecosystem:cordova",
@@ -14,12 +14,12 @@
     "authentication",
     "auth"
   ],
-  "author": "Carlos \"blakgeek\" Lawton",
+  "author": "Vlado Velichkovski",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/blakgeek/cordova-plugin-firebase-auth-google/issues"
+    "url": "https://github.com/stormwin/cordova-plugin-firebase-auth-google/issues"
   },
-  "homepage": "https://github.com/blakgeek/cordova-plugin-firebase-auth-google",
+  "homepage": "https://github.com/stormwin/cordova-plugin-firebase-auth-google",
   "dependencies": {
     "elementtree": "^0.1.6",
     "plist": "^1.2.0",
