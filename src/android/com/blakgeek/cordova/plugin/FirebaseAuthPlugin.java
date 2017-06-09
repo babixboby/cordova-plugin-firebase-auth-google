@@ -84,8 +84,12 @@ public class FirebaseAuthPlugin extends CordovaPlugin implements OnCompleteListe
             user.getToken(false).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
                 @Override
                 public void onComplete(@NonNull Task<GetTokenResult> task) {
-
-                    callbackContext.success(task.getResult().getToken());
+                     if (!task.isSuccessful()) {
+                        Exception err = task.getException();
+                        callbackContext.error(task.getException().getMessage());
+                    } else {
+                        callbackContext.success(task.getResult().getToken());
+                    }
                 }
             });
         } else if (currentToken != null) {
@@ -245,24 +249,34 @@ public class FirebaseAuthPlugin extends CordovaPlugin implements OnCompleteListe
             user.getToken(false).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
                 @Override
                 public void onComplete(@NonNull Task<GetTokenResult> task) {
-
-                    final JSONObject data = new JSONObject();
-                    String token = task.getResult().getToken();
-
-                    if(token != null && !token.equals(currentToken)) {
-                        currentToken = token;
+                    if (!task.isSuccessful()) {
+                         Exception err = task.getException();
+                        JSONObject data = new JSONObject();
                         try {
-
-                            data.put("token", token);
-                            data.put("name", user.getDisplayName());
-                            data.put("email", user.getEmail());
-                            data.put("id", user.getUid());
-                            if (user.getPhotoUrl() != null) {
-                                data.put("photoUrl", user.getPhotoUrl().toString());
-                            }
+                            data.put("code", "UH_OH");
+                            data.put("message", err.getMessage());
                         } catch (JSONException e) {
                         }
-                        raiseEvent("signinsuccess", data);
+                        raiseEvent("signinfailure", data);
+                    } else {
+                        final JSONObject data = new JSONObject();
+                        String token = task.getResult().getToken();
+
+                        if(token != null && !token.equals(currentToken)) {
+                            currentToken = token;
+                            try {
+
+                                data.put("token", token);
+                                data.put("name", user.getDisplayName());
+                                data.put("email", user.getEmail());
+                                data.put("id", user.getUid());
+                                if (user.getPhotoUrl() != null) {
+                                    data.put("photoUrl", user.getPhotoUrl().toString());
+                                }
+                            } catch (JSONException e) {
+                            }
+                            raiseEvent("signinsuccess", data);
+                        }
                     }
                 }
             });
