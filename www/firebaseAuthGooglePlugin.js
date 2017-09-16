@@ -1,4 +1,5 @@
 var exec = require('cordova/exec');
+var PLUGIN_NAME = 'FirebaseAuthGooglePlugin';
 
 function dispatchEvent(event) {
 
@@ -10,27 +11,27 @@ function FirebaseAuth() { }
 FirebaseAuth.prototype.init = function(options) {
     options = options || {};
     var allowDomains = options.allowDomains ? [].concat(options.allowDomains) : null;
-    exec(dispatchEvent, null, 'FirebaseAuthPlugin', 'initialize', [allowDomains]);
+    exec(dispatchEvent, null, PLUGIN_NAME, 'initialize', [allowDomains]);
 };
 
 FirebaseAuth.prototype.getToken = function(success, failure) {
     
-    return exec(success, failure, 'FirebaseAuthPlugin', 'getToken', []);
+    return exec(success, failure, PLUGIN_NAME, 'getToken', []);
 };
 
-FirebaseAuth.prototype.signIn = function () {
+FirebaseAuth.prototype.signIn = function (silent) {
 
-    return exec(null, null, 'FirebaseAuthPlugin', 'signIn', []);
+    return exec(null, null, PLUGIN_NAME, 'signIn', [silent === true]);
 };
 
 FirebaseAuth.prototype.signOut = function () {
 
-    return exec(null, null, 'FirebaseAuthPlugin', 'signOut', []);
+    return exec(null, null, PLUGIN_NAME, 'signOut', []);
 };
 
 FirebaseAuth.prototype.getUserData = function(success, failure) {
     
-    return exec(success, failure, 'FirebaseAuthPlugin', 'getUserData', []);
+    return exec(success, failure, PLUGIN_NAME, 'getUserData', []);
 };
 
 if (typeof module !== undefined && module.exports) {

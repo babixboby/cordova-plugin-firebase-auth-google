@@ -1,7 +1,7 @@
-#import "FirebaseAuthPlugin.h"
+#import "FirebaseAuthGooglePlugin.h"
 @import Firebase;
 
-@implementation FirebaseAuthPlugin
+@implementation FirebaseAuthGooglePlugin
 
 - (void)initialize:(CDVInvokedUrlCommand *)command {
 
@@ -50,7 +50,12 @@
 
 - (void)signIn:(CDVInvokedUrlCommand *)command {
 
-    [[GIDSignIn sharedInstance] signIn];
+    BOOL silent = [command.arguments[0] boolValue];
+    if(silent == YES) {
+        [[GIDSignIn sharedInstance] signInSilently];
+    } else {
+        [[GIDSignIn sharedInstance] signIn];
+    }
 }
 
 - (void)signOut:(CDVInvokedUrlCommand *)command {
@@ -101,6 +106,7 @@
                     @"type": @"signinfailure",
                     @"data": @{
                             @"code": @"domain_not_allowed",
+                            @"domain": user.hostedDomain ? user.hostedDomain : @"gmail.com",
                             @"message": @"the domain is not allowed"
                     }
             }];
@@ -118,7 +124,7 @@
                 @"type": @"signinfailure",
                 @"data": @{
                         @"code": @(error.code),
-                        @"message": error.description
+                        @"message": error.description ? error.description : [NSNull null]
                 }
         }];
         [pluginResult setKeepCallbackAsBool:YES];
@@ -132,42 +138,37 @@
 
         if (error == nil) {
             FIRUser *currentUser = [FIRAuth auth].currentUser;
-            [currentUser getTokenForcingRefresh:YES
-                                     completion:^(NSString *_Nullable idToken,
-                                                  NSError *_Nullable error) {
+            [currentUser getTokenWithCompletion:^(NSString *_Nullable idToken, NSError *_Nullable error) {
                                          
-                                         NSDictionary *message;
-                                         
-                                         if (error) {
-                                             message = @{
-                                                         @"type": @"signinfailure",
-                                                         @"data": @{
-                                                                 @"code": [NSNumber numberWithInteger:error.code],
-                                                                 @"message": error.description == nil ? [NSNull null] : error.description
-                                                                 }
-                                                         };
-                                         } else {
-                                        
-                                            message = @{
-                                                         @"type": @"signinsuccess",
-                                                         @"data": @{
-                                                                 @"token": idToken,
-                                                                 @"id": user.uid == nil ? [NSNull null] : user.uid,
-                                                                 @"name": user.displayName == nil ? [NSNull null] : user.displayName,
-                                                                 @"email": user.email == nil ? [NSNull null] : user.email,
-                                                                 @"photoUrl": user.photoURL == nil ? [NSNull null] : [user.photoURL absoluteString]
-                                                                 }
-                                                         };
-                                             
-                                             
-                                             CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:message];
-                                             [pluginResult setKeepCallbackAsBool:YES];
-                                             [self.commandDelegate sendPluginResult:pluginResult callbackId:self.eventCallbackId];
-                                         }
-                                         
-                                         // Send token to your backend via HTTPS
-                                         // ...
-                                     }];
+                NSDictionary *message;
+
+                if (error) {
+                 message = @{
+                             @"type": @"signinfailure",
+                             @"data": @{
+                                     @"code": [NSNumber numberWithInteger:error.code],
+                                     @"message": error.description == nil ? [NSNull null] : error.description
+                                     }
+                             };
+                } else {
+
+                message = @{
+                             @"type": @"signinsuccess",
+                             @"data": @{
+                                     @"token": idToken,
+                                     @"id": user.uid == nil ? [NSNull null] : user.uid,
+                                     @"name": user.displayName == nil ? [NSNull null] : user.displayName,
+                                     @"email": user.email == nil ? [NSNull null] : user.email,
+                                     @"photoUrl": user.photoURL == nil ? [NSNull null] : [user.photoURL absoluteString]
+                                     }
+                             };
+                 
+                 
+                 CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:message];
+                 [pluginResult setKeepCallbackAsBool:YES];
+                 [self.commandDelegate sendPluginResult:pluginResult callbackId:self.eventCallbackId];
+                }
+            }];
         } else {
             NSDictionary *message = @{
                     @"type": @"signinfailure",
